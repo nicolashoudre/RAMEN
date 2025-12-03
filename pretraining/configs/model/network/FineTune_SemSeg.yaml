@@ -1,0 +1,13 @@
+defaults:
+  - encoder: RamenViT_MonoRes
+
+instance:
+  _target_: models.networks.Fine_tuning.FineSemSeg
+  encoder: ${model.network.encoder}
+  output_size: ${model.network.encoder.embed_dim}
+  pred_size: ${pred_size}
+  path: null
+  freeze: True
+  n_class: ${dataset.num_classes}
+  use_attn_pooling: False
+  modalities: ${modalities}

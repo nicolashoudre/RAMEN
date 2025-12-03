@@ -1,0 +1,58 @@
+# @package _global_
+
+defaults:
+  - override /dataset: Planted
+  - override /model/network/encoder: RamenViT
+  - override /model: Classif
+  - override /model/network: FineTune
+  - override /model/loss: bce
+  - override /model/train_metrics: metrics_mono
+  - override /model/val_metrics: metrics_mono
+  - override /model/test_metrics: metrics_mono
+  - override /trainer: cluster-v100
+
+name: multi
+test: True
+modalities: ["s2", "s1", "l7", "alos", "dem"]
+modalities_chans: {"s2": 10, "s1": 3, "l7": 6, "alos": 3}
+modalities_res: {"s2": 10.0, "s1": 10.0, "l7": 30.0, "alos": 30.0}
+modalities_input_size: {"s2": 12, "s1": 12, "l7": 4, "alos": 4}
+all_res: [15.0]
+wavelengths: {}
+max_epochs: 100
+experiment_name: ${model.name}_${dataset.name}_SAVEENC
+
+dataset:
+  global_batch_size: 16
+
+model:
+  optimizer:
+    lr: 0.0001
+  scheduler:
+    _target_: models.utils.LinearWarmupCosineAnnealingLR
+    _partial_: true
+    warmup_epochs: 15
+    max_epochs: ${max_epochs}
+    warmup_start_lr: 0.000001
+    eta_min: 0.000001
+  network:
+    encoder:
+        embed_dim: 768
+        depth: 12
+        num_heads: 12
+        class_token: True
+        drop_rate: 0.
+        drop_path_rate: 0.
+        attn_drop_rate: 0.
+    instance:
+      name: 'encoder'
+      freeze: True
+      path: /lustre/fsn1/projects/rech/qsm/uix17xe/RAMEN/logs/RAMEN_multidataset_base_MAE_final/checkpoints/epoch_099.ckpt
+
+callbacks:
+  model_checkpoint:
+    save_top_k: 1
+  early_stopping:
+    monitor: "val/F1_Score_macro"
+    mode: "max"
+    patience: 20

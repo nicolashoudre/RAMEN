@@ -1,0 +1,11 @@
+defaults:
+  - default.yaml
+
+trainer:
+  accelerator: gpu
+  devices: ${trainer.devices}
+  sync_batchnorm: True
+  precision: 32
+
+devices: 1
+num_workers: 4

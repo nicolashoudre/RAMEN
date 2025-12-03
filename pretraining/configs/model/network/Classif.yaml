@@ -1,0 +1,11 @@
+defaults:
+  - encoder: RamenViTAttnPool
+
+instance:
+  _target_: models.networks.Classif.Classif
+  encoder: ${model.network.encoder}
+  path: null
+  freeze: True
+  num_classes: ${dataset.num_classes}
+  modalities: ${modalities}
+  pooling_method: 'avg'

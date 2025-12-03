@@ -1,0 +1,12 @@
+defaults:
+  - encoder: RamenViT_MultiRes
+
+instance:
+  _target_: models.networks.Fine_tuning.Fine
+  encoder: ${model.network.encoder}
+  output_size: ${model.network.encoder.embed_dim}
+  path: null
+  freeze: True
+  n_class: ${dataset.num_classes}
+  pooling_method: 'avg'
+  modalities: ${modalities}

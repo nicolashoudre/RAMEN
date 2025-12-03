@@ -1,0 +1,4 @@
+_target_: pangaea.decoders.linearsegmentation.LinearSegmentation
+encoder: null
+num_classes: ${dataset.num_classes}
+finetune: ${finetune}

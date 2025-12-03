@@ -1,0 +1,11 @@
+defaults:
+  - encoder: RamenViT
+
+instance:
+  _target_: models.networks.Fine_tuning.ScaleCheck
+  encoder: ${model.network.encoder}
+  path: null
+  freeze: True
+  n_class: ${dataset.num_classes}
+  use_attn_pooling: False
+  modalities: ${modalities}

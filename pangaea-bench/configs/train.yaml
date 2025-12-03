@@ -1,0 +1,34 @@
+train: true
+work_dir: ""
+seed: 234
+use_wandb: false
+wandb_run_id: null
+
+# TRAINING
+num_workers: 8
+batch_size: 8
+
+test_num_workers: 4
+test_batch_size: 1
+
+# EXPERIMENT
+finetune: false
+ckpt_dir: null
+limited_label_train: 1
+limited_label_val: 1
+limited_label_strategy: stratified  # Options: stratified, oversampled, random
+stratification_bins: 3 #  number of bins for stratified sampling, only for stratified
+data_replicate: 1
+use_final_ckpt: false
+
+
+defaults:
+  - task: ???
+  - dataset: ???
+  - encoder: ???
+  - decoder: ???
+  - preprocessing: ???
+  - criterion: ???
+  - lr_scheduler: multi_step_lr
+  - optimizer: adamw
+  - _self_ 

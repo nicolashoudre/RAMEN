@@ -1,0 +1,64 @@
+defaults:
+  - train_transform: Identity
+  - test_transform: Identity
+  - _self_
+
+name: multiworldstrat
+global_batch_size: ${global_batch_size}
+
+train_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat
+      path: ${data_dir}/worldstrat/
+      modalities: ${modalities.worldstrat}
+      split: train
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/worldstrat/
+      nb_split: ${dataset.worldstrat.nb_split}
+      cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+val_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat
+      path: ${data_dir}/worldstrat/
+      modalities: ${modalities.worldstrat}
+      split: val
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/worldstrat/
+      nb_split: ${dataset.worldstrat.nb_split}
+      cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+test_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat
+      path: ${data_dir}/worldstrat/
+      modalities: ${modalities.worldstrat}
+      split: test
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: 1.0
+      norm_path: ${data_dir}/worldstrat/
+      nb_split: ${dataset.worldstrat.nb_split}
+      cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+worldstrat:
+  num_classes: 19
+  nb_split: 4
+  cloud_threshold: 100.0
+  temporal_dropout: 0.3

@@ -1,0 +1,25 @@
+defaults:
+  - encoder: RamenViTMultiDataAttnPool
+
+instance:
+  _target_: models.networks.RAMEN_MAE.RAMENMAE
+  encoder: ${model.network.encoder}
+  decoder: 
+    _target_: models.networks.encoder.DecoderViT.RamenDecoderViT
+    datasets: ${datasets}
+    modalities: ${modalities}
+    modalities_res: ${modalities_res}
+    modalities_input_size: ${modalities_input_size}
+    all_res: ${all_res}
+    wavelengths : ${wavelengths}
+    embed_dim: ${model.network.encoder.embed_dim}
+    decoder_embed_dim: 512 
+    depth: 8
+    num_heads: 16
+    mlp_ratio: 4.0
+    qvk_bias: True
+    qk_scale: null
+    drop_rate: 0.0
+    drop_path_rate: 0.0
+    attn_drop_rate: 0.0
+  mask_ratio: 0.75

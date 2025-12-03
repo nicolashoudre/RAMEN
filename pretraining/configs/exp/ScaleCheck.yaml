@@ -1,0 +1,70 @@
+# @package _global_
+
+defaults:
+  - override /dataset: FLAIRHUB
+  - override /model/network/encoder: RamenViT
+  - override /model: SemSeg
+  - override /model/network: ScaleCheck
+  - override /model/loss: CrossEntropyIgnore
+  - override /model/train_metrics: metrics_segsem
+  - override /model/val_metrics: metrics_segsem
+  - override /model/test_metrics: metrics_segsem
+  - override /trainer: cluster-v100
+
+name: multi
+test: True
+modalities: ["aerial", "s2"]
+modalities_chans: {"aerial": 4, "dem": 2, "s2": 10, "s1_des":2}
+modalities_res: {"aerial": 0.2, "dem": 0.2, "s2": 10.24, "s1_des":10.24}
+modalities_input_size: {"aerial": 512, "dem": 512, "s2": 10, "s1_des":10}
+all_res: [3.0]
+wavelengths: {"aerial": [490.0, 560.0, 665.0, 835.0], "dem":  ["dsm", "dtm"], "s2": [490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 1610.0, 2190.0], "s1_des": ["vv", "vh"]} 
+num_iterations: 1
+max_epochs: 100
+experiment_name: ${model.name}_${dataset.name}_JEPA_LP_semseg
+pred_size: 512
+
+
+dataset:
+  global_batch_size: 64
+  num_classes: 16
+  temporal_dropout: 0.3
+
+model:
+  optimizer:
+    lr: 0.001
+  scheduler:
+    _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+    _partial_: true
+    warmup_epochs: 5
+    max_epochs: ${max_epochs}
+    warmup_start_lr: 0.0001
+    eta_min: 0.00001
+  train_metrics:
+    ignore_index: 15
+  val_metrics:
+    ignore_index: 15
+  test_metrics:
+    ignore_index: 15
+  network:
+    encoder:
+      embed_dim: 768
+      depth: 12
+      num_heads: 12
+      class_token: True
+      drop_rate: 0.
+      drop_path_rate: 0.
+      attn_drop_rate: 0.
+    instance:
+      name: 'encoder'
+      freeze: False
+      path: /lustre/fsn1/projects/rech/qsm/uix17xe/RAMEN/logs/RAMEN_multidataset_base_MAE_final/checkpoints/epoch_099.ckpt
+      use_attn_pooling: False
+
+callbacks:
+  model_checkpoint:
+    save_top_k: 10
+  early_stopping:
+    monitor: "val/mIoU"
+    mode: "max"
+    patience: 20

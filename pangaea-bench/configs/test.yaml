@@ -1,0 +1,16 @@
+train: false
+work_dir: ""
+seed: 234
+use_wandb: false
+
+# TRAINING
+num_workers: 1
+batch_size: 1
+
+
+# EXPERIMENT
+use_final_ckpt: false
+finetune: false
+ckpt_dir: ???
+
+

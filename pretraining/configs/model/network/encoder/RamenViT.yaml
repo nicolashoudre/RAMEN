@@ -1,0 +1,20 @@
+_target_: models.networks.encoder.RamenViT.RamenViT
+
+modalities: ${modalities}
+modalities_res: ${modalities_res}
+modalities_input_size: ${modalities_input_size}
+all_res: ${all_res}
+num_iterations: ${num_iterations}
+wavelengths : ${wavelengths}
+
+embed_dim: 768
+depth: 12
+num_heads: 12
+mlp_ratio: 4.0
+qvk_bias: True
+qk_scale: null
+class_token: True
+drop_rate: 0.0
+drop_path_rate: 0.0
+attn_drop_rate: 0.0
+

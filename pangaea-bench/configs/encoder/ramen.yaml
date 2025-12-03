@@ -1,0 +1,45 @@
+_target_: pangaea.encoders.ramen_encoder.RAMEN_Encoder
+encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/ramen_base_99.ckpt
+download_url: null
+
+embed_dim: 768
+input_size: ${dataset.img_size}
+depth: 12
+num_heads: 12
+mlp_ratio: 4
+
+input_bands: ${dataset.bands}
+
+input_res: 10.0
+modalities_res:
+  optical: ${input_res}
+  sar: ${input_res}
+
+res: 40.0
+
+wavelengths:
+  optical:
+    - 440.0
+    - 490.0
+    - 560.0
+    - 665.0
+    - 705.0
+    - 740.0
+    - 783.0
+    - 832.0
+    - 865.0
+    - 945.0
+    - 1373.0
+    - 1610.0
+    - 2200.0
+  sar:
+    - 'asc_vv'
+    - 'asc_vh'
+  
+output_layers:
+  - 3
+  - 5
+  - 7
+  - 11
+
+output_dim: 768

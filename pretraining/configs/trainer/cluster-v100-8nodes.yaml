@@ -1,0 +1,13 @@
+defaults:
+  - default.yaml
+
+trainer:
+  accelerator: gpu
+  devices: ${trainer.devices}
+  sync_batchnorm: True
+  precision: bf16-mixed
+  strategy: ddp_find_unused_parameters_true
+  num_nodes: 8
+
+devices: 4
+num_workers: 4

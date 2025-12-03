@@ -1,0 +1,46 @@
+defaults:
+  - train_transform: Identity
+  - test_transform: Identity
+  - _self_
+
+name: flairhub
+global_batch_size: 256
+num_classes: 16
+norm_path: ${data_dir}/flairhub
+temporal_dropout: 0.3
+
+train_dataset:
+  _partial_: true
+  _target_: data.FLAIRHUB.FLAIRHUB
+  path: ${data_dir}/flairhub/data
+  modalities: ${modalities}
+  split: train
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: ${partition}
+  norm_path: ${dataset.norm_path}
+  temporal_dropout: ${dataset.temporal_dropout}
+
+val_dataset:
+  _partial_: true
+  _target_: data.FLAIRHUB.FLAIRHUB
+  path: ${data_dir}/flairhub/data
+  modalities: ${modalities}
+  split: val
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: ${partition}
+  norm_path: ${dataset.norm_path}
+  temporal_dropout: ${dataset.temporal_dropout}
+
+test_dataset:
+  _partial_: true
+  _target_: data.FLAIRHUB.FLAIRHUB
+  path: ${data_dir}/flairhub/data
+  modalities: ${modalities}
+  split: test
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: 1.0
+  norm_path: ${dataset.norm_path}
+  temporal_dropout: ${dataset.temporal_dropout}

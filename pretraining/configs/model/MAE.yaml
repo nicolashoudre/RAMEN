@@ -1,0 +1,33 @@
+defaults:
+  - network: RAMEN_MAE
+  - loss: mae
+  - train_metrics: no_metrics
+  - val_metrics: no_metrics
+  - test_metrics: no_metrics
+  - _self_
+
+name: RAMEN
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 0.0001
+  weight_decay: 0.05
+
+scheduler:
+  _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+  _partial_: true
+  warmup_epochs: 15
+  max_epochs: ${max_epochs}
+  warmup_start_lr: 0.00001
+  eta_min: 0.000001
+
+instance:
+  _target_: src.models.module_MAE.Module
+  optimizer: ${model.optimizer}
+  scheduler: ${model.scheduler}
+  network: ${model.network}
+  loss: ${model.loss}
+  train_metrics: ${model.train_metrics}
+  val_metrics: ${model.val_metrics}
+  test_metrics: ${model.test_metrics}

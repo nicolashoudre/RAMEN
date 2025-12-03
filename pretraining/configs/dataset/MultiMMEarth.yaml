@@ -1,0 +1,33 @@
+defaults:
+  - train_transform: Identity
+  - test_transform: Identity
+  - _self_
+
+name: multimmearth
+global_batch_size: ${global_batch_size}
+
+train_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    mmearth:
+      _target_: data.MMEarth.MMEarth
+      path: ${data_dir}/MMEarth64/
+      split: train
+      transform: ${dataset.train_transform}
+      partition: ${partition}
+      modalities: ${modalities.mmearth}
+      norm_path: ${data_dir}/MMEarth64/
+
+val_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    mmearth:
+      _target_: data.MMEarth.MMEarth
+      path: ${data_dir}/MMEarth64/
+      split: val
+      transform: ${dataset.train_transform}
+      partition: ${partition}
+      modalities: ${modalities.mmearth}
+      norm_path: ${data_dir}/MMEarth64/

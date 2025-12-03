@@ -1,0 +1,54 @@
+defaults:
+  - train_transform: Identity
+  - test_transform: Identity
+  - _self_
+
+name: worldstrat
+global_batch_size: 16
+num_classes: 19
+norm_path: ${data_dir}
+nb_split: 8
+cloud_threshold: 100.0
+temporal_dropout: 0.3
+
+train_dataset:
+  _partial_: true
+  _target_: data.WorldStrat.WorldStrat
+  path: ${data_dir}
+  modalities: ${modalities}
+  split: train
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: ${partition}
+  norm_path: ${dataset.norm_path}
+  nb_split: ${dataset.nb_split}
+  cloud_threshold: ${dataset.cloud_threshold}
+  temporal_dropout: ${dataset.temporal_dropout}
+
+val_dataset:
+  _partial_: true
+  _target_: data.WorldStrat.WorldStrat
+  path: ${data_dir}
+  modalities: ${modalities}
+  split: val
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: ${partition}
+  norm_path: ${dataset.norm_path}
+  nb_split: ${dataset.nb_split}
+  cloud_threshold: ${dataset.cloud_threshold}
+  temporal_dropout: ${dataset.temporal_dropout}
+
+test_dataset:
+  _partial_: true
+  _target_: data.WorldStrat.WorldStrat
+  path: ${data_dir}
+  modalities: ${modalities}
+  split: test
+  transform: ${dataset.train_transform}
+  num_classes: ${dataset.num_classes}
+  partition: 1.0
+  norm_path: ${dataset.norm_path}
+  nb_split: ${dataset.nb_split}
+  cloud_threshold: ${dataset.cloud_threshold}
+  temporal_dropout: ${dataset.temporal_dropout}

@@ -1,0 +1,12 @@
+defaults:
+  - encoder: RamenViTAttnPool
+
+instance:
+  _target_: models.networks.LinearSegmentation.LinearSegmentation
+  encoder: ${model.network.encoder}
+  path: null
+  pred_size: ${pred_size}
+  freeze: False
+  num_classes: ${dataset.num_classes}
+  use_attn_pooling: False
+  modalities: ${modalities}

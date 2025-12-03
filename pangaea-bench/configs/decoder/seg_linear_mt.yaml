@@ -1,0 +1,5 @@
+_target_: pangaea.decoders.linearsegmentation.LinearMTSegmentation
+encoder: null
+num_classes: ${dataset.num_classes}
+finetune: ${finetune}
+multi_temporal: ${dataset.multi_temporal}

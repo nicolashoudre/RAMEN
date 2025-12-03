@@ -1,0 +1,135 @@
+# @package _global_
+
+defaults:
+  - override /dataset: MultiDataset
+  - override /model/network/encoder: RamenViTMultiData
+  - override /model: MAEMultiData
+  - override /model/network: RAMEN_MAEMultiData
+  - override /model/loss: mae
+  - override /model/train_metrics: no_metrics
+  - override /model/val_metrics: no_metrics
+  - override /model/test_metrics: no_metrics
+  - override /trainer: cluster-h100
+
+name: multi
+test: False
+ckpt_path: #/lustre/fsn1/projects/rech/qsm/uix17xe/RAMEN/logs/RAMEN_multidataset_base_MAE_final/checkpoints/last.ckpt
+
+datasets: 
+  - "flairhub"
+  - "mmearth"
+  - "worldstrat"
+
+global_batch_size: 
+  flairhub: 4
+  mmearth: 32
+  worldstrat: 2
+  
+datamodule:
+  _target_: data.datamodule.DataModuleMulti
+  global_batch_size: ${global_batch_size}
+  weights_datasets:
+    flairhub: 1
+    mmearth: 1
+    worldstrat: 1
+
+modalities: 
+  flairhub: 
+    - "aerial" 
+    - "dem" 
+    - "s2"
+    - "s1_des"
+  mmearth:
+    - "dem"
+    - "s2" 
+    - "s1"
+  worldstrat:
+    - "spot" 
+    - "s2"
+
+modalities_res: 
+  flairhub:
+    aerial: 0.2
+    dem: 0.2
+    s2: 10.24
+    s1_des: 10.24
+  mmearth:
+    dem: 10.0
+    s2: 10.0
+    s1: 10.0
+  worldstrat: 
+    spot: 1.5
+    s2: 10.0
+
+modalities_input_size:
+  flairhub: 
+    aerial: 512
+    dem: 512
+    s2: 10
+    s1_des: 10
+  mmearth:
+    dem: 64
+    s2: 64
+    s1: 64
+  worldstrat: 
+    spot: 263
+    s2: 39
+
+all_res:
+  flairhub: [3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0]
+  mmearth: [20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
+  worldstrat: [5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0]
+
+wavelengths:
+  flairhub:
+    aerial: [640.0, 560.0, 480.0, 810.0]
+    dem:  ["dsm", "dtm"]
+    s2: [490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 1610.0, 2190.0]
+    s1_des: ["des_vv", "des_vh"]
+  mmearth:
+    dem: ["dsm", "slope"]
+    s2: [443.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0, 1370.0, 1610.0, 2190.0]
+    s1: ["asc_vv", "asc_vh", "asc_hh", "asc_hv", "des_vv", "des_vh", "des_hh", "des_hv"]
+  worldstrat:
+    spot: [665.0, 560.0, 490.0, 835.0]
+    s2: [443.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0, 1610.0, 2190.0]
+
+num_iterations: 1
+experiment_name: ${model.name}_${dataset.name}_base_MAE_final
+partition: 1.0
+max_epochs: 300
+
+model:
+  optimizer:
+    lr: 0.00015
+  scheduler:
+    _target_: models.utils.LinearWarmupCosineAnnealingLR
+    _partial_: true
+    warmup_epochs: 20
+    max_epochs: ${max_epochs}
+    warmup_start_lr: 0.00001
+    eta_min: 0.000001
+  network:
+    instance:
+      encoder:
+        embed_dim: 768
+        depth: 12
+        num_heads: 12
+        class_token: True
+        drop_rate: 0.
+        drop_path_rate: 0.
+        attn_drop_rate: 0.
+      decoder:
+        _target_: models.networks.encoder.DecoderViT.RamenDecoderViT
+        embed_dim: 768
+        decoder_embed_dim: 512
+        depth: 8
+        num_heads: 16
+
+callbacks:
+  model_checkpoint:
+    save_top_k: 30
+  early_stopping:
+    monitor: "val/loss"
+    mode: "min"
+    patience: 300

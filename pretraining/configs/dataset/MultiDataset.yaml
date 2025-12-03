@@ -1,0 +1,122 @@
+defaults:
+  - train_transform: Identity
+  - test_transform: Identity
+  - _self_
+
+name: multidataset
+global_batch_size: ${global_batch_size}
+
+train_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    flairhub:
+      _target_: data.FLAIRHUB.FLAIRHUB_PT
+      path: ${data_dir}/flairhub
+      modalities: ${modalities.flairhub}
+      split: train
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.flairhub.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/flairhub
+      temporal_dropout: ${dataset.flairhub.temporal_dropout}
+    mmearth:
+      _target_: data.MMEarth.MMEarth
+      path: ${data_dir}/MMEarth64/
+      split: train
+      transform: ${dataset.train_transform}
+      partition: 0.6
+      modalities: ${modalities.mmearth}
+      norm_path: ${data_dir}/MMEarth64/
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat_PT
+      path: ${data_dir}/worldstrat
+      modalities: ${modalities.worldstrat}
+      split: train
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/worldstrat
+      #nb_split: ${dataset.worldstrat.nb_split}
+      #cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      #temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+val_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    flairhub:
+      _target_: data.FLAIRHUB.FLAIRHUB_PT
+      path: ${data_dir}/flairhub
+      modalities: ${modalities.flairhub}
+      split: val
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.flairhub.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/flairhub
+      temporal_dropout: ${dataset.flairhub.temporal_dropout}
+    mmearth:
+      _target_: data.MMEarth.MMEarth
+      path: ${data_dir}/MMEarth64/
+      split: val
+      transform: ${dataset.train_transform}
+      partition: 0.6
+      modalities: ${modalities.mmearth}
+      norm_path: ${data_dir}/MMEarth64/
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat_PT
+      path: ${data_dir}/worldstrat
+      modalities: ${modalities.worldstrat}
+      split: val
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/worldstrat
+      #nb_split: ${dataset.worldstrat.nb_split}
+      #cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      #temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+test_dataset:
+  _partial_: true
+  _target_: data.MultiDataset.MultiDataset
+  datasets:
+    flairhub:
+      _target_: data.FLAIRHUB.FLAIRHUB_PT
+      path: ${data_dir}/flairhub
+      modalities: ${modalities.flairhub}
+      split: val
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.flairhub.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/flairhub
+      temporal_dropout: ${dataset.flairhub.temporal_dropout}
+    mmearth:
+      _target_: data.MMEarth.MMEarth
+      path: ${data_dir}/MMEarth64/
+      split: val
+      transform: ${dataset.train_transform}
+      partition: 0.6
+      modalities: ${modalities.mmearth}
+      norm_path: ${data_dir}/MMEarth64/
+    worldstrat:
+      _target_: data.WorldStrat.WorldStrat_PT
+      path: ${data_dir}/worldstrat
+      modalities: ${modalities.worldstrat}
+      split: val
+      transform: ${dataset.train_transform}
+      num_classes: ${dataset.worldstrat.num_classes}
+      partition: ${partition}
+      norm_path: ${data_dir}/worldstrat
+      #nb_split: ${dataset.worldstrat.nb_split}
+      #cloud_threshold: ${dataset.worldstrat.cloud_threshold}
+      #temporal_dropout: ${dataset.worldstrat.temporal_dropout}
+
+flairhub:
+  num_classes: 19
+  temporal_dropout: 0.3
+
+worldstrat:
+  num_classes: 19
+  nb_split: 4
+  cloud_threshold: 100.0
+  temporal_dropout: 0.3

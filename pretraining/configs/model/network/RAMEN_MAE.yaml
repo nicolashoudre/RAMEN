@@ -1,0 +1,9 @@
+defaults:
+  - encoder: RamenViT
+  - decoder: DecoderViT
+
+instance:
+  _target_: models.networks.RAMEN_MAE.RAMENMAE
+  encoder: ${model.network.encoder}
+  decoder: ${model.network.decoder}
+  mask_ratio: 0.75

@@ -1,0 +1,39 @@
+_target_: pangaea.datasets.geobench.mbrickkiln.mBrickKiln
+dataset_name: mBrickKiln
+root_path: ${oc.env:GEO_BENCH_DIR}/classification_v1.0/m-brick-kiln
+download_url: "recursix/geo-bench-1.0"
+auto_download: True
+
+num_classes: 2
+img_size: 64
+multi_temporal: False
+multi_modal: False
+
+ignore_index: -100
+classes:  ['not brick kiln', 'brick kiln']
+distribution: [0, 0]
+bands:
+  optical:
+    - B1
+    - B2
+    - B3
+    - B4
+    - B5
+    - B6
+    - B7
+    - B8
+    - B8A
+    - B9
+    - B10
+    - B11
+    - B12
+    
+data_mean:
+  optical: [574.7587880700896, 674.3473615470523, 886.3656479311578, 815.0945462528913, 1128.8088426870465, 1934.450471876027, 2045.7652282437202, 2012.744587807115, 1608.6255233989034, 1129.8171906000355, 83.27188605598549, 90.54924599052214, 68.98768652434848]
+data_std:
+  optical: [193.60631504991184, 238.75447480113132, 276.9631260242207, 361.15060137326634, 364.5888078793488, 724.2707123576525, 819.653063972575, 794.3652427593881, 800.8538290702304, 704.0219637458916, 36.355745901131705, 28.004671947623894, 24.268892726362033]
+
+data_min:
+  optical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+data_max:
+  optical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
