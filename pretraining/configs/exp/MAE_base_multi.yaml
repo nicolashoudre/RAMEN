@@ -13,14 +13,14 @@ defaults:
 
 name: multi
 test: False
-ckpt_path: #/lustre/fsn1/projects/rech/qsm/uix17xe/RAMEN/logs/RAMEN_multidataset_base_MAE_final/checkpoints/last.ckpt
+ckpt_path: null # Path to checkpoint to resume training from
 
 datasets: 
   - "flairhub"
   - "mmearth"
   - "worldstrat"
 
-global_batch_size: 
+global_batch_size: # Batch size per gpu in this setup
   flairhub: 4
   mmearth: 32
   worldstrat: 2
@@ -95,7 +95,7 @@ wavelengths:
     s2: [443.0, 490.0, 560.0, 665.0, 705.0, 740.0, 783.0, 842.0, 865.0, 945.0, 1610.0, 2190.0]
 
 num_iterations: 1
-experiment_name: ${model.name}_${dataset.name}_base_MAE_final
+experiment_name: ${model.name}_${dataset.name}_base_MAE
 partition: 1.0
 max_epochs: 300
 

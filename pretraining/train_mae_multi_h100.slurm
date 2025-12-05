@@ -28,4 +28,4 @@ module load pytorch-gpu/py3/2.4.0
 # Echo des commandes lancees
 set -x
 
-srun python -u src/train.py exp=SaveCheck trainer=gpu max_epochs=1
+srun python -u src/train.py exp=MAE_base_multi trainer=cluster-h100 max_epochs=100
