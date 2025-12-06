@@ -150,85 +150,6 @@ class Evaluator:
 
         return merged_pred
 
-    def profile_model(
-        self,
-        model: torch.nn.Module,
-        warmup_steps: int = 5,
-        measure_steps: int = 10,
-        use_cuda: bool = True,
-    ):
-        """
-        Profile FLOPs, parameters, and latency of a model using torch.profiler.
-
-        Args:
-            model (nn.Module): Model to profile.
-            warmup_steps (int): Number of warmup iterations before profiling.
-            measure_steps (int): Number of steps to measure.
-            use_cuda (bool): Whether to profile CUDA (GPU) activity.
-
-        Returns:
-            dict: Containing FLOPs, params, avg latency (ms), GFLOPs/s, etc.
-        """
-        device = self.device
-        model = model.to(device)
-        model.eval()
-
-        # get one batch from val_loader as example input
-        example_batch = next(iter(self.val_loader))
-        image = {k: v.to(device) for k, v in example_batch["image"].items()}
-        target_shape = example_batch["target"].shape[-2:] if "target" in example_batch else None
-
-        # Warmup iterations (stabilize CUDA kernels)
-        for _ in range(warmup_steps):
-            with torch.no_grad():
-                _ = model(image) if target_shape is None else model(image, output_shape=target_shape)
-            if use_cuda:
-                torch.cuda.synchronize()
-
-        # Main profiling session
-        activities = [ProfilerActivity.CPU]
-        if use_cuda and torch.cuda.is_available():
-            activities.append(ProfilerActivity.CUDA)
-
-        with profile(
-            activities=activities,
-            record_shapes=True,
-            with_flops=True,
-            profile_memory=True,
-            with_stack=False,
-        ) as prof:
-            for _ in range(measure_steps):
-                with record_function("model_inference"):
-                    with torch.no_grad():
-                        _ = model(image) if target_shape is None else model(image, output_shape=target_shape)
-                if use_cuda:
-                    torch.cuda.synchronize()
-
-        # Summarize
-        prof_data = prof.key_averages()
-
-        total_flops = sum(e.flops for e in prof_data if e.flops)
-        total_params = sum(p.numel() for p in model.parameters())
-        avg_latency_ms = (prof.self_cpu_time_total / measure_steps) / 1e3  # ms per batch
-
-        # Derived metrics
-        gflops = total_flops / 1e9 if total_flops else 0
-        gflops_per_sec = (gflops / (avg_latency_ms / 1000)) if avg_latency_ms > 0 else 0
-
-        results = {
-            "Params (M)": total_params / 1e6,
-            "FLOPs (G)": gflops,
-            "Avg Latency (ms)": avg_latency_ms,
-            "Throughput (GFLOPs/s)": gflops_per_sec,
-        }
-
-        # Log and optionally report
-        self.logger.info(f"\n--- Model Profiling Summary ---")
-        for k, v in results.items():
-            self.logger.info(f"{k:25s}: {v:.3f}")
-
-        return results
-
     def decode_mask(self, mask):
         if torch.is_tensor(mask):
             mask = mask.cpu().numpy()
@@ -255,10 +176,9 @@ class Evaluator:
         valid_values = mask[valid]
         rgb[valid] = palette[valid_values]
     
-        # INVALID values => BLACK (or any debug color)
         invalid = ~valid
-        if np.any(invalid):
-            print("WARNING: invalid mask values detected:", np.unique(mask[invalid]))
+        #if np.any(invalid):
+        #    print("WARNING: invalid mask values detected:", np.unique(mask[invalid]))
         rgb[invalid] = [0, 0, 0]
     
         return rgb
@@ -273,7 +193,6 @@ class Evaluator:
         img_tensor = img_tensor[: , 0, :, :]
         C, H, W = img_tensor.shape
     
-        # Save full tensor (normalized by channel)
         full_img = img_tensor.clone()
         for c in range(C):
             minv = full_img[c].min()
@@ -659,16 +578,17 @@ class SegEvaluator(Evaluator):
             else:
                 pred = torch.argmax(logits, dim=1)
 
-            if self.rank == 0 and batch_idx < 20:   
-                save_dir = os.path.join(self.exp_dir, "visualizations")
-                self.save_sample_visualization(
-                    img_dict=image,
-                    target=target,            
-                    pred=pred,
-                    save_dir=save_dir,
-                    idx=batch_idx,
-                    rgb_bands=[3,2,1]        
-                )
+            # Uncomment to save sample visualizations
+            #if self.rank == 0 and batch_idx < 20:   
+            #    save_dir = os.path.join(self.exp_dir, "visualizations")
+            #    self.save_sample_visualization(
+            #        img_dict=image,
+            #        target=target,            
+            #        pred=pred,
+            #        save_dir=save_dir,
+            #        idx=batch_idx,
+            #        rgb_bands=[3,2,1]        
+            #    )
         
             valid_mask = target != self.ignore_index
             pred, target = pred[valid_mask], target[valid_mask]

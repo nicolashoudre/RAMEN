@@ -1,5 +1,5 @@
 _target_:  pangaea.encoders.ssl4eo_mae_encoder.SSL4EO_MAE_OPTICAL_Encoder
-encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/B13_vits16_mae_0099_ckpt.pth
+encoder_weights: ./pretrained_models/B13_vits16_mae_0099_ckpt.pth
 download_url: https://drive.google.com/uc?id=1QTBKl1asxgQCNd6bO2azXZNPfoQ3Sazv&export=download&confirm=yes
 
 

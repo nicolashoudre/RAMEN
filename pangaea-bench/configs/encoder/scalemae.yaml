@@ -1,5 +1,5 @@
 _target_: pangaea.encoders.scalemae_encoder.ScaleMAE_Encoder
-encoder_weights:  /lustre/fsn1/projects/rech/qsm/uix17xe/scalemae-vitlarge-800.pth
+encoder_weights:  ./pretrained_models/scalemae-vitlarge-800.pth
 download_url: https://github.com/bair-climate-initiative/scale-mae/releases/download/base-800/scalemae-vitlarge-800.pth
 
 embed_dim: 1024

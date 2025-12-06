@@ -29,8 +29,8 @@ class RAMEN_Encoder(Encoder):
         output_dim: int | list[int],
         output_layers: int | list[int],
         download_url: str,
-        modalities_res: dict = {},
-        res: float = 10.0,
+        input_res: float = 10.0,
+        res: float = 40.0,
         wavelengths: dict = {},
         depth: int = 12,
         num_heads: int = 12,
@@ -49,7 +49,7 @@ class RAMEN_Encoder(Encoder):
             input_size=input_size,
             embed_dim=embed_dim,
             output_layers=output_layers,
-            output_dim=output_dim,
+            output_dim=output_dim*len(input_bands),
             multi_temporal=True,
             multi_temporal_output=False,
             pyramid_output=False,
@@ -61,8 +61,8 @@ class RAMEN_Encoder(Encoder):
 
         self.input_bands = input_bands
 
-        self.modalities = self.input_bands.keys()
-        self.modalities_res = modalities_res
+        self.modalities = list(self.input_bands.keys())
+        self.input_res = input_res
         self.res = res
         self.wavelengths = {m: [wavelengths[m][band] for band in self.input_bands[m]] for m in self.modalities}
         self.embed_dim = embed_dim
@@ -112,11 +112,11 @@ class RAMEN_Encoder(Encoder):
         #if self.cls_token is not None:
             #trunc_normal_(self.cls_token, std=.02)
 
-        self.effective_size = int(self.input_size * (self.modalities_res[self.modalities[0]] / res))
+        self.effective_size = int(self.input_size * (self.input_res / self.res))
         self.pos_embed = get_2d_sincos_pos_embed_with_resolution(
             embed_dim,
             self.effective_size,
-            torch.tensor([res]),
+            torch.tensor([self.res]),
             cls_token=True,
             )
 
@@ -148,7 +148,7 @@ class RAMEN_Encoder(Encoder):
             out_mod = out_mod.permute(0, 1, 4, 2, 3).reshape(B * T, -1, H, W).contiguous() # [B*T, D, H, W]
 
             expected_size = self.effective_size
-            scale = (self.modalities_res[modality] / self.res)
+            scale = (self.input_res / self.res)
             out_mod = self.resampler(out_mod, scale)
                     
             if out_mod.shape[2] != expected_size or out_mod.shape[3] != expected_size:
@@ -244,8 +244,8 @@ class RAMEN_Encoder_MonoTemporal(Encoder):
         output_dim: int | list[int],
         output_layers: int | list[int],
         download_url: str,
-        modalities_res: dict = {},
-        res: float = 10.0,
+        input_res: float = 10.0,
+        res: float = 40.0,
         wavelengths: dict = {},
         depth: int = 12,
         num_heads: int = 12,
@@ -264,7 +264,7 @@ class RAMEN_Encoder_MonoTemporal(Encoder):
             input_size=input_size,
             embed_dim=embed_dim,
             output_layers=output_layers,
-            output_dim=output_dim,
+            output_dim=output_dim*len(input_bands),
             multi_temporal=False,
             multi_temporal_output=False,
             pyramid_output=False,
@@ -277,7 +277,7 @@ class RAMEN_Encoder_MonoTemporal(Encoder):
         self.input_bands = input_bands
 
         self.modalities = self.input_bands.keys()
-        self.modalities_res = modalities_res
+        self.input_res = input_res
         self.res = res
         self.wavelengths = {m: [wavelengths[m][band] for band in self.input_bands[m]] for m in self.modalities}
         self.embed_dim = embed_dim
@@ -313,11 +313,11 @@ class RAMEN_Encoder_MonoTemporal(Encoder):
         #if self.cls_token is not None:
             #trunc_normal_(self.cls_token, std=.02)
 
-        self.effective_size = int(self.input_size * (self.modalities_res[self.modalities[0]] / res))
+        self.effective_size = int(self.input_size * (self.input_res / self.res))
         self.pos_embed = get_2d_sincos_pos_embed_with_resolution(
             embed_dim,
             self.effective_size,
-            torch.tensor([res]),
+            torch.tensor([self.res]),
             cls_token=True,
             )
 
@@ -348,7 +348,7 @@ class RAMEN_Encoder_MonoTemporal(Encoder):
             out_mod = out_mod.permute(0, 3, 1, 2).contiguous() # [B, D, H, W]
 
             expected_size = self.effective_size
-            scale = (self.modalities_res[modality] / self.res)
+            scale = (self.input_res / self.res)
             out_mod = self.resampler(out_mod, scale)
                     
             if out_mod.shape[2] != expected_size or out_mod.shape[3] != expected_size:

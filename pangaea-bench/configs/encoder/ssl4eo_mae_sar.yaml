@@ -1,5 +1,5 @@
 _target_:  pangaea.encoders.ssl4eo_mae_encoder.SSL4EO_MAE_SAR_Encoder
-encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/B2_vits16_mae_ep99.pth
+encoder_weights: ./pretrained_models/B2_vits16_mae_ep99.pth
 download_url: https://huggingface.co/wangyi111/SSL4EO-S12/resolve/main/B2_vits16_mae_ep99.pth
 
 embed_dim: 384

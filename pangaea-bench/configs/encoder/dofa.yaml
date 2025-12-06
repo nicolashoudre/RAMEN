@@ -1,5 +1,5 @@
 _target_: pangaea.encoders.dofa_encoder.DOFA_Encoder
-encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/DOFA_ViT_base_e100.pth
+encoder_weights: ./pretrained_models/DOFA_ViT_base_e100.pth
 download_url: https://huggingface.co/XShadow/DOFA/resolve/main/DOFA_ViT_base_e100.pth
 
 embed_dim: 768

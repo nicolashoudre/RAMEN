@@ -1,5 +1,5 @@
 _target_: pangaea.encoders.ssl4eo_data2vec_encoder.SSL4EO_Data2Vec_Encoder
-encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/B13_vits16_data2vec_0099_ckpt.pth
+encoder_weights: ./pretrained_models/B13_vits16_data2vec_0099_ckpt.pth
 download_url: https://drive.google.com/uc?id=1VbIGBwzZYndv4v1vx9FiD6IP-YwsHEns&export=download&confirm=yes
 
 embed_dim: 384

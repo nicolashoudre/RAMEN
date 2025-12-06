@@ -1,5 +1,5 @@
 _target_: pangaea.encoders.ramen_encoder.RAMEN_Encoder_MonoTemporal
-encoder_weights: /lustre/fsn1/projects/rech/qsm/uix17xe/ramen_base_99.ckpt
+encoder_weights: ./pretrained_models/ramen_base_99.ckpt
 download_url: https://huggingface.co/nicolashoudre/RAMEN/resolve/main/ramen_base_99.ckpt
 
 embed_dim: 768
@@ -11,30 +11,26 @@ mlp_ratio: 4
 input_bands: ${dataset.bands}
 
 input_res: 10.0
-modalities_res:
-  optical: ${input_res}
-  sar: ${input_res}
-
 res: 40.0
 
 wavelengths:
   optical:
-    - 440.0
-    - 490.0
-    - 560.0
-    - 665.0
-    - 705.0
-    - 740.0
-    - 783.0
-    - 832.0
-    - 865.0
-    - 945.0
-    - 1373.0
-    - 1610.0
-    - 2200.0
+    B1: 440.0
+    B2: 490.0
+    B3: 560.0
+    B4: 665.0
+    B5: 705.0
+    B6: 740.0
+    B7: 783.0
+    B8: 832.0
+    B8A: 865.0
+    B9: 945.0
+    B10: 1373.0
+    B11: 1610.0
+    B12: 2200.0
   sar:
-    - 'asc_vv'
-    - 'asc_vh'
+    VV: 'asc_vv'
+    VH: 'asc_vh'
   
 output_layers:
   - 3
