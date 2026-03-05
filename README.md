@@ -12,6 +12,7 @@ Official implementation of [RAMEN: Resolution-Adjustable Multimodal Encoder for 
 
 **News:**
 
+- **05/03/2026**: **[CVPR2026]** RAMEN has been accepted at [Conference on Computer Vision and Pattern Recognition (CVPR) 2026](https://cvpr.thecvf.com/) 🎉 
 - **05/12/2025**: [ArXiv pre-print](https://arxiv.org/abs/2512.05025) and [encoder weights](https://huggingface.co/nicolashoudre/RAMEN) are available ! 
 Hugging face transformer integration and demo notebook will be released soon.
 
